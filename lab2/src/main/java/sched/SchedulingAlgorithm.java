@@ -59,7 +59,7 @@ public class SchedulingAlgorithm {
         String resultsFile = "Summary-Processes";
 
         result.schedulingType =  "Preemptive";
-        result.schedulingName = "Shortest Job First";
+        result.schedulingName = "Shortest Process Next";
         try {
             //BufferedWriter out = new BufferedWriter(new FileWriter(resultsFile));
             //OutputStream out = new FileOutputStream(resultsFile);
