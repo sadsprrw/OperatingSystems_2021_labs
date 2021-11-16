@@ -10,11 +10,11 @@ public class SchedulingAlgorithm {
 
     private static int get_minimal_arrive(Vector processes) {
         sProcess process = (sProcess) processes.elementAt(0);
-        int minArrtime =  process.arrivedtime;
+        int minArrtime =  process.arrivedTime;
         for (int i = processes.size() - 1; i >= 0; i--){
             process = (sProcess) processes.elementAt(i);
-            if(process.arrivedtime < minArrtime){
-                minArrtime = process.arrivedtime;
+            if(process.arrivedTime < minArrtime){
+                minArrtime = process.arrivedTime;
             }
         }
         return minArrtime;
@@ -25,26 +25,25 @@ public class SchedulingAlgorithm {
         Vector processVector = new Vector();
         for (int i = processes.size() - 1; i >= 0; i--){
             process = (sProcess) processes.elementAt(i);
-            if(process.arrivedtime == current_time){
+            if(process.arrivedTime == current_time){
                 processVector.addElement(process);
             }
         }
         return processVector;
     }
 
-    private static int get_minimal_cputime(Vector arrProcesses){
+    private static int get_minimal_prediction(Vector arrProcesses){
         sProcess process =  (sProcess) arrProcesses.firstElement();
-        int minCpu = process.bursttime - process.cpudone/process.ioblocking;
-
-        int minCpuIndex = arrProcesses.indexOf(process);
+        int minPre = process.predictedTime;
+        int minPreIndex = arrProcesses.indexOf(process);
         for (int i = arrProcesses.size() - 1; i >= 0; i--){
             process = (sProcess) arrProcesses.elementAt(i);
-            if(process.bursttime - process.cpudone/process.ioblocking < minCpu){
-                minCpu = process.bursttime - process.cpudone/process.ioblocking;
-                minCpuIndex = i;
+            if(process.predictedTime < minPre){
+                minPre = process.predictedTime;
+                minPreIndex = i;
             }
         }
-        return minCpuIndex;
+        return minPreIndex;
     }
 
     public static Results Run(int runtime, Vector processVector, Results result) {
@@ -54,7 +53,7 @@ public class SchedulingAlgorithm {
         int size = processVector.size();
         int currentTime = get_minimal_arrive(processVector);
         Vector arrivedProcessVector = get_arrived_processes(processVector, currentTime);
-        int currentProcessId = get_minimal_cputime(arrivedProcessVector);
+        int currentProcessId = get_minimal_prediction(arrivedProcessVector);
         int completed = 0;
         String resultsFile = "Summary-Processes";
 
@@ -65,8 +64,8 @@ public class SchedulingAlgorithm {
             //OutputStream out = new FileOutputStream(resultsFile);
             PrintStream out = new PrintStream(new FileOutputStream(resultsFile));
             sProcess process = (sProcess) arrivedProcessVector.elementAt(currentProcessId);
-            out.println("Process: " + process.id + " registered... (" + process.cputime + " " +
-                    process.ioblocking + " " + process.cpudone + " " + process.cpudone + ")");
+            out.println("Process: " + process.id + " registered... (" + process.cpuTime + " " +
+                    process.ioBlocking + " " + process.cpuDone + " " + process.cpuDone + " " + process.predictedTime + ")");
             while (comptime < runtime) {
                 if(currentProcessId == -1){
                     currentTime++;
@@ -74,24 +73,24 @@ public class SchedulingAlgorithm {
                     for (i = newArrived.size() - 1; i >= 0; i--){
                         process = (sProcess) newArrived.elementAt(i);
                         arrivedProcessVector.addElement(process);
-                        out.println("Process: " + process.id + " arrived... (" + process.cputime + " " +
-                                process.ioblocking + " " + process.cpudone + " " + process.cpudone + ")");
+                        out.println("Process: " + process.id + " arrived... (" + process.cpuTime + " " +
+                                process.ioBlocking + " " + process.cpuDone + " " + process.cpuDone + " " + process.predictedTime + ")");
                     }
                     if (arrivedProcessVector.size() > 0) {
-                        currentProcessId = get_minimal_cputime(arrivedProcessVector);
+                        currentProcessId = get_minimal_prediction(arrivedProcessVector);
                         process = (sProcess) arrivedProcessVector.elementAt(currentProcessId);
-                        out.println("Process: " + process.id + " registered... (" + process.cputime + " " +
-                                process.ioblocking + " " + process.cpudone + " " + process.cpudone + ")");
+                        out.println("Process: " + process.id + " registered... (" + process.cpuTime + " " +
+                                process.ioBlocking + " " + process.cpuDone + " " + process.cpuDone + " " + process.predictedTime +")");
                     }
                     else{
                         currentProcessId = -1;
                     }
                 }
                 else {
-                    if (process.cpudone == process.cputime) {
+                    if (process.cpuDone == process.cpuTime) {
                         completed++;
-                        out.println("Process: " + process.id + " completed... (" + process.cputime + " " +
-                                process.ioblocking + " " + process.cpudone + " " + process.cpudone + ")");
+                        out.println("Process: " + process.id + " completed... (" + process.cpuTime + " " +
+                                process.ioBlocking + " " + process.cpuDone + " " + process.cpuDone + " " + process.predictedTime + ")");
                         arrivedProcessVector.remove(currentProcessId);
                         if (completed == size) {
                             result.compuTime = comptime;
@@ -103,43 +102,45 @@ public class SchedulingAlgorithm {
                         for (i = newArrived.size() - 1; i >= 0; i--) {
                             process = (sProcess) newArrived.elementAt(i);
                             arrivedProcessVector.addElement(process);
-                            out.println("Process: " + process.id + " arrived... (" + process.cputime + " " +
-                                    process.ioblocking + " " + process.cpudone + " " + process.cpudone + ")");
+                            out.println("Process: " + process.id + " arrived... (" + process.cpuTime + " " +
+                                    process.ioBlocking + " " + process.cpuDone + " " + process.cpuDone + " " + process.predictedTime + ")");
                         }
                         if (arrivedProcessVector.size() > 0) {
-                            currentProcessId = get_minimal_cputime(arrivedProcessVector);
+                            currentProcessId = get_minimal_prediction(arrivedProcessVector);
                             process = (sProcess) arrivedProcessVector.elementAt(currentProcessId);
-                            out.println("Process: " + process.id + " registered... (" + process.cputime + " " +
-                                    process.ioblocking + " " + process.cpudone + " " + process.cpudone + ")");
+                            out.println("Process: " + process.id + " registered... (" + process.cpuTime + " " +
+                                    process.ioBlocking + " " + process.cpuDone + " " + process.cpuDone + " " + process.predictedTime + ")");
                         } else {
                             currentProcessId = -1;
                         }
                     }
-                    if (process.ioblocking == process.ionext) {
-                        out.println("Process: " + process.id + " I/O blocked... (" + process.cputime + " " +
-                                process.ioblocking + " " + process.cpudone + " " + process.cpudone + ")");
-                        process.numblocked++;
-                        process.ionext = 0;
+                    if (process.ioBlocking == process.ioNext) {
+                        out.println("Process: " + process.id + " I/O blocked... (" + process.cpuTime + " " +
+                                process.ioBlocking + " " + process.cpuDone + " " + process.cpuDone + " " + process.predictedTime + ")");
+                        process.numBlocked++;
+                        process.ioNext = 0;
                         currentTime++;
+                        out.println("Process: " + process.id + " is ready... (" + process.cpuTime + " " +
+                                process.ioBlocking + " " + process.cpuDone + " " + process.cpuDone + " " + process.predictedTime + ")");
                         Vector newArrived = get_arrived_processes(processVector, currentTime);
                         for (i = newArrived.size() - 1; i >= 0; i--) {
                             process = (sProcess) newArrived.elementAt(i);
                             arrivedProcessVector.addElement(process);
-                            out.println("Process: " + process.id + " arrived... (" + process.cputime + " " +
-                                    process.ioblocking + " " + process.cpudone + " " + process.cpudone + ")");
+                            out.println("Process: " + process.id + " arrived... (" + process.cpuTime + " " +
+                                    process.ioBlocking + " " + process.cpuDone + " " + process.cpuDone + " " + process.predictedTime + ")");
                         }
                         if (arrivedProcessVector.size() > 0) {
-                            currentProcessId = get_minimal_cputime(arrivedProcessVector);
+                            currentProcessId = get_minimal_prediction(arrivedProcessVector);
                             process = (sProcess) arrivedProcessVector.elementAt(currentProcessId);
-                            out.println("Process: " + process.id + " registered... (" + process.cputime + " " +
-                                    process.ioblocking + " " + process.cpudone + " " + process.cpudone + ")");
+                            out.println("Process: " + process.id + " registered... (" + process.cpuTime + " " +
+                                    process.ioBlocking + " " + process.cpuDone + " " + process.cpuDone + " " + process.predictedTime + ")");
                         } else {
                             currentProcessId = -1;
                         }
                     }
-                    process.cpudone++;
-                    if (process.ioblocking > 0) {
-                        process.ionext++;
+                    process.cpuDone++;
+                    if (process.ioBlocking > 0) {
+                        process.ioNext++;
                     }
                     comptime++;
                 }

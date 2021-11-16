@@ -1,9 +1,9 @@
 Scheduling Type: Preemptive
 Scheduling Name: Shortest Process Next
-Simulation Run Time: 3548
+Simulation Run Time: 2560
 Mean: 1100
 Standard Deviation: 510
 Results		CPU Time	IO Blocking	CPU Completed	CPU Blocked		Arrive Time
-0			1048 (ms)	100 (ms)	1048 (ms)		10 times		1
-1			1250 (ms)	500 (ms)	1250 (ms)		2 times			4
-2			1250 (ms)	30 (ms)		1250 (ms)		41 times		8
+0			1100 (ms)	100 (ms)	1100 (ms)		10 times		1
+1			900 (ms)	500 (ms)	900 (ms)		1 times			4
+2			560 (ms)	30 (ms)		560 (ms)		18 times		6

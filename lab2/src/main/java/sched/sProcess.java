@@ -1,23 +1,23 @@
 package sched;
 
 public class sProcess {
-  public int cputime;
-  public int ioblocking;
-  public int cpudone;
-  public int ionext;
-  public int numblocked;
-  public int arrivedtime;
+  public int cpuTime;
+  public int ioBlocking;
+  public int cpuDone;
+  public int ioNext;
+  public int numBlocked;
+  public int arrivedTime;
   public int id;
-  public int bursttime;
+  public int predictedTime;
 
-  public sProcess (int cputime, int ioblocking, int cpudone, int ionext, int numblocked, int arrivedtime, int id) {
-    this.cputime = cputime;
-    this.ioblocking = ioblocking;
-    this.cpudone = cpudone;
-    this.ionext = ionext;
-    this.numblocked = numblocked;
-    this.arrivedtime = arrivedtime;
+  public sProcess (int cputime, int ioblocking, int cpudone, int ionext, int numblocked, int arrivedtime, int id, int predictedTime) {
+    this.cpuTime = cputime;
+    this.ioBlocking = ioblocking;
+    this.cpuDone = cpudone;
+    this.ioNext = ionext;
+    this.numBlocked = numblocked;
+    this.arrivedTime = arrivedtime;
     this.id = id;
-    this.bursttime = cputime/ioblocking + 1;
+    this.predictedTime = predictedTime;
   } 	
 }
